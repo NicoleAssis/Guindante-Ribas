@@ -1,0 +1,207 @@
+{
+  "workstations": [
+    {
+      "id": "ws-eng-01",
+      "hostname": "RIBAS-ENG-WS01",
+      "ip": "192.168.1.104",
+      "mac": "00:1B:44:11:3A:B7",
+      "userName": "Carlos Menezes",
+      "role": "Engenheiro Planejador",
+      "crea": "CREA-PR 78755/D | RPP-23-1040",
+      "department": "Engenharia de Rigging"
+    },
+    {
+      "id": "ws-rig-02",
+      "hostname": "RIBAS-RIG-WS02",
+      "ip": "192.168.1.118",
+      "mac": "00:1B:44:88:9C:21",
+      "userName": "Anderson Souza",
+      "role": "Rigger",
+      "crea": "Rigger Certificado NR-11/NR-12",
+      "department": "Operações e Montagem"
+    },
+    {
+      "id": "ws-eng-03",
+      "hostname": "RIBAS-ENG-NOTE03",
+      "ip": "192.168.1.142",
+      "mac": "00:1B:44:55:1D:09",
+      "userName": "Giuliano Cesar Breda de Souza",
+      "role": "Engenheiro Responsável",
+      "crea": "CREA-PR 78755/D | RPP-23-1040",
+      "department": "Diretoria Técnica"
+    }
+  ],
+  "cranes": [
+    {
+      "id": "crane-md45007",
+      "code": "GR-01",
+      "model": "Palfinger MD 45.007",
+      "type": "Guindaste Articulado (Munck)",
+      "truck": "Volvo/VM 270 6X2R",
+      "plate": "IUL8A16",
+      "chassis": "93KP0R1C7DE141594",
+      "year": 2013,
+      "nominalCapacityTons": 45.0,
+      "selfWeightKgf": 11550,
+      "defaultColumnDistA": 2.95,
+      "defaultOutriggerSpanB": 5.7,
+      "laudoArt": "1720261926954",
+      "laudoValidade": "06/10/2026",
+      "createdByHost": "RIBAS-ENG-WS01 (192.168.1.104)",
+      "loadTable": [
+        { "radiusM": 3.5, "boomM": 5.1, "capacityKgf": 10450 },
+        { "radiusM": 4.18, "boomM": 5.1, "capacityKgf": 8800 },
+        { "radiusM": 5.98, "boomM": 5.1, "capacityKgf": 7077 },
+        { "radiusM": 7.5, "boomM": 7.4, "capacityKgf": 5250 },
+        { "radiusM": 9.8, "boomM": 9.7, "capacityKgf": 3850 },
+        { "radiusM": 12.0, "boomM": 12.0, "capacityKgf": 2950 }
+      ]
+    },
+    {
+      "id": "crane-tm130",
+      "code": "GR-02",
+      "model": "Tadano TM 130 / MD 300L",
+      "type": "Guindaste Telescópico Rodoviário",
+      "truck": "Mercedes-Benz Axor 3344",
+      "plate": "BCV4E22",
+      "chassis": "9BM958461EB992104",
+      "year": 2019,
+      "nominalCapacityTons": 130.0,
+      "selfWeightKgf": 28400,
+      "defaultColumnDistA": 3.4,
+      "defaultOutriggerSpanB": 7.2,
+      "laudoArt": "1720261988102",
+      "laudoValidade": "15/12/2026",
+      "createdByHost": "RIBAS-ENG-WS01 (192.168.1.104)",
+      "loadTable": [
+        { "radiusM": 4.0, "boomM": 11.0, "capacityKgf": 42000 },
+        { "radiusM": 6.0, "boomM": 11.0, "capacityKgf": 29500 },
+        { "radiusM": 8.0, "boomM": 15.5, "capacityKgf": 21000 },
+        { "radiusM": 10.0, "boomM": 15.5, "capacityKgf": 16200 },
+        { "radiusM": 14.0, "boomM": 22.0, "capacityKgf": 10800 }
+      ]
+    }
+  ],
+  "accessories": [
+    {
+      "id": "acc-1",
+      "code": "CP-3M-6T-01",
+      "type": "Cinta Plana",
+      "description": "Cinta plana 3 metros de comprimento - Capacidade 6t",
+      "capacityTons": 4.2,
+      "nominalLabelTons": 6.0,
+      "unitWeightKg": 4.87,
+      "registeredAt": "10/01/2026",
+      "registeredByHost": "RIBAS-ENG-WS01 (192.168.1.104)",
+      "usesCount": 14,
+      "maxUsesLimit": 30,
+      "wearStatus": "OK",
+      "wearNotes": "Inspeção visual em dia. Costuras íntegras.",
+      "history": [
+        { "date": "12/05/2026", "planNumber": "2607031", "client": "Bosch Curitiba", "host": "RIBAS-ENG-WS01", "user": "Carlos Menezes" },
+        { "date": "24/07/2026", "planNumber": "2607036", "client": "Kaefer Rip / Bosch", "host": "RIBAS-ENG-WS01", "user": "Carlos Menezes" }
+      ]
+    },
+    {
+      "id": "acc-2",
+      "code": "MC-78-G6-04",
+      "type": "Manilha",
+      "description": "Manilha Curva 7/8\" com pino roscado - GRAU 6 - FS 6:1",
+      "capacityTons": 5.5,
+      "nominalLabelTons": 5.5,
+      "unitWeightKg": 1.7,
+      "registeredAt": "15/01/2026",
+      "registeredByHost": "RIBAS-ENG-WS01 (192.168.1.104)",
+      "usesCount": 19,
+      "maxUsesLimit": 40,
+      "wearStatus": "OK",
+      "wearNotes": "Rosca e pino sem deformação plástica.",
+      "history": [
+        { "date": "24/07/2026", "planNumber": "2607036", "client": "Kaefer Rip / Bosch", "host": "RIBAS-ENG-WS01", "user": "Carlos Menezes" }
+      ]
+    },
+    {
+      "id": "acc-3",
+      "code": "CP-4M-6T-02",
+      "type": "Cinta Plana",
+      "description": "Cinta plana 4 metros de comprimento - Capacidade 6t",
+      "capacityTons": 4.2,
+      "nominalLabelTons": 6.0,
+      "unitWeightKg": 5.97,
+      "registeredAt": "02/02/2026",
+      "registeredByHost": "RIBAS-RIG-WS02 (192.168.1.118)",
+      "usesCount": 28,
+      "maxUsesLimit": 30,
+      "wearStatus": "ALERTA_DESGASTE",
+      "wearNotes": "Atingiu 93% da vida útil recomendada (28/30 ciclos). Leve abrasão lateral.",
+      "history": [
+        { "date": "18/06/2026", "planNumber": "2607033", "client": "Volvo do Brasil", "host": "RIBAS-RIG-WS02", "user": "Anderson Souza" },
+        { "date": "24/07/2026", "planNumber": "2607036", "client": "Kaefer Rip / Bosch", "host": "RIBAS-ENG-WS01", "user": "Carlos Menezes" }
+      ]
+    },
+    {
+      "id": "acc-4",
+      "code": "MC-1P-G6-09",
+      "type": "Manilha",
+      "description": "Manilha Curva 1\" com pino roscado - GRAU 6 - FS 6:1",
+      "capacityTons": 7.2,
+      "nominalLabelTons": 7.2,
+      "unitWeightKg": 2.5,
+      "registeredAt": "10/02/2026",
+      "registeredByHost": "RIBAS-ENG-WS01 (192.168.1.104)",
+      "usesCount": 11,
+      "maxUsesLimit": 40,
+      "wearStatus": "OK",
+      "wearNotes": "Sem avarias.",
+      "history": [
+        { "date": "24/07/2026", "planNumber": "2607036", "client": "Kaefer Rip / Bosch", "host": "RIBAS-ENG-WS01", "user": "Carlos Menezes" }
+      ]
+    },
+    {
+      "id": "acc-5",
+      "code": "LCA-12MM-07",
+      "type": "Laço de Cabo de Aço",
+      "description": "Laço de cabo de aço Ø 1/2\" (12,7mm) alma de aço 6x19",
+      "capacityTons": 2.6,
+      "nominalLabelTons": 2.6,
+      "unitWeightKg": 6.4,
+      "registeredAt": "05/11/2025",
+      "registeredByHost": "RIBAS-RIG-WS02 (192.168.1.118)",
+      "usesCount": 35,
+      "maxUsesLimit": 35,
+      "wearStatus": "DESCARTADO",
+      "wearNotes": "Descartado em 10/09/2026 por arames rompidos na presilha (NR-11).",
+      "discardedAt": "10/09/2026",
+      "discardedByHost": "RIBAS-RIG-WS02 (192.168.1.118)",
+      "history": [
+        { "date": "03/04/2026", "planNumber": "2607022", "client": "Renault", "host": "RIBAS-RIG-WS02", "user": "Anderson Souza" }
+      ]
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "log-1",
+      "timestamp": "21/10/2026 19:40:12",
+      "hostname": "RIBAS-ENG-WS01",
+      "ip": "192.168.1.104",
+      "userName": "Carlos Menezes",
+      "role": "Engenheiro Planejador",
+      "module": "Sistema / Rede",
+      "action": "Sessão iniciada automaticamente via reconhecimento de Hostname e IP na rede interna."
+    },
+    {
+      "id": "log-2",
+      "timestamp": "21/10/2026 19:42:05",
+      "hostname": "RIBAS-RIG-WS02",
+      "ip": "192.168.1.118",
+      "userName": "Anderson Souza",
+      "role": "Rigger",
+      "module": "UC04 — Acessórios",
+      "action": "Inspeção registrada na Cinta CP-4M-6T-02 (Alerta de desgaste: 28/30 ciclos)."
+    }
+  ],
+  "sequences": {
+    "lastPlanSeq": 2607035,
+    "lastArtSeq": 20260041
+  }
+}
