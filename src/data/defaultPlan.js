@@ -1,9 +1,10 @@
-
 export const DEFAULT_PLAN = {
   assignedPlanNumber: '2607036',
   assignedInternalArtNumber: null,
   creaArtNumber: '1720264496217',
   date: '2026-07-24',
+  status: 'RASCUNHO', // 'RASCUNHO' | 'EM_VALIDACAO' | 'APROVADO'
+  attachments: [], // Array de { name, url (base64), type }
   clientName: 'Kaefer Rip Serviços Industriais Ltda.',
   clientCnpj: '07.522.191/0048-64',
   contractAddress: 'Rod. Engenheiro Ermênio de Oliveira Penteado, 57 - Indaiatuba/SP',
