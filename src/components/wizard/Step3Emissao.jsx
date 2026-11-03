@@ -1,33 +1,71 @@
 import React, { useRef } from 'react';
-import { Printer, AlertTriangle, Paperclip, CheckCircle2, Clock, History, Trash2 } from 'lucide-react';
+import { Printer, AlertTriangle, Paperclip, CheckCircle2, Clock, History, Trash2, FileText, Image as ImageIcon, Shield } from 'lucide-react';
 
 export default function Step3Emissao({ plan, setPlan, calculations, selectedCrane, handleEmitPdf, savedPlans }) {
   const fileInputRef = useRef(null);
 
-  const handleFileUpload = (e) => {
-    const files = Array.from(e.target.files);
-    files.forEach((file) => {
+  const compressImage = (file) => {
+    return new Promise((resolve) => {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setPlan((prev) => ({
-          ...prev,
-          attachments: [...(prev.attachments || []), { name: file.name, type: file.type, url: reader.result }]
-        }));
-      };
       reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 800;
+          const scaleSize = MAX_WIDTH / img.width;
+          canvas.width = MAX_WIDTH;
+          canvas.height = img.height * scaleSize;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL('image/jpeg', 0.6));
+        };
+      };
     });
+  };
+
+  const handleFileUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    for (const file of files) {
+      if (file.type.startsWith('image/')) {
+        const compressedUrl = await compressImage(file);
+        setPlan((prev) => ({ ...prev, attachments: [...(prev.attachments || []), { name: file.name, type: 'image/jpeg', url: compressedUrl }] }));
+      } else {
+        alert('Por favor, envie apenas imagens (fotos).');
+      }
+    }
     e.target.value = null;
   };
 
   const removeAttachment = (index) => {
+    setPlan((prev) => ({ ...prev, attachments: prev.attachments.filter((_, i) => i !== index) }));
+  };
+
+  const clientHistory = Array.isArray(savedPlans) 
+    ? savedPlans.filter((p) => p.clientName === plan.clientName && p.assignedPlanNumber !== plan.assignedPlanNumber) 
+    : [];
+
+  // Função para marcar/desmarcar documentos
+  const toggleDoc = (docKey) => {
     setPlan((prev) => ({
       ...prev,
-      attachments: prev.attachments.filter((_, i) => i !== index)
+      selectedDocs: {
+        planilha: true, memorial: true, desenho: true, art: true, laudo: true, pop: true,
+        ...(prev.selectedDocs || {}),
+        [docKey]: !(prev.selectedDocs?.[docKey] ?? true)
+      }
     }));
   };
 
-  // Filtra o histórico pelo cliente atual
-  const clientHistory = savedPlans?.filter((p) => p.clientName === plan.clientName && p.assignedPlanNumber !== plan.assignedPlanNumber) || [];
+  const docsOptions = [
+    { key: 'planilha', label: '1. Planilha de Capacidades', icon: FileText },
+    { key: 'memorial', label: '2. Memorial de Cálculo', icon: FileText },
+    { key: 'desenho', label: '3. Desenho Técnico', icon: ImageIcon },
+    { key: 'art', label: '4. ART (CREA-PR)', icon: FileText },
+    { key: 'laudo', label: '5. Laudo de Inspeção', icon: Shield },
+    { key: 'pop', label: '6. Procedimento Operacional (POP)', icon: FileText },
+  ];
 
   return (
     <div className="space-y-5 animate-fade-in">
@@ -36,7 +74,7 @@ export default function Step3Emissao({ plan, setPlan, calculations, selectedCran
           <h2 className="font-bold text-lg text-slate-900 flex items-center gap-2">
             <Printer className="w-5 h-5 text-amber-600" /> Revisão e Emissão
           </h2>
-          <p className="text-xs text-slate-500">Defina o status, anexe documentos, verifique o histórico e emita o PDF.</p>
+          <p className="text-xs text-slate-500">Selecione os documentos, anexe fotos e emita o PDF Oficial.</p>
         </div>
         <button onClick={handleEmitPdf} className="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold px-4 py-2 rounded-lg flex items-center gap-2 shadow-lg">
           <Printer className="w-4 h-4" /> Emitir PDF Oficial
@@ -69,17 +107,41 @@ export default function Step3Emissao({ plan, setPlan, calculations, selectedCran
         </div>
       </div>
 
+      {/* SELEÇÃO DE DOCUMENTOS PARA EMISSÃO */}
+      <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+        <h3 className="font-bold text-sm text-slate-800 mb-1">Documentos que serão impressos</h3>
+        <p className="text-xs text-slate-500 mb-3">Desmarque os documentos que NÃO deseja incluir no PDF final.</p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          {docsOptions.map((doc) => {
+            const isChecked = plan.selectedDocs?.[doc.key] ?? true;
+            return (
+              <label key={doc.key} className={`flex items-center gap-2 p-2 rounded border cursor-pointer transition ${isChecked ? 'bg-amber-50 border-amber-300' : 'bg-white border-slate-200'}`}>
+                <input 
+                  type="checkbox" 
+                  checked={isChecked} 
+                  onChange={() => toggleDoc(doc.key)} 
+                  className="w-4 h-4 text-amber-600 rounded"
+                />
+                <doc.icon className={`w-4 h-4 ${isChecked ? 'text-amber-700' : 'text-slate-400'}`} />
+                <span className={`text-xs font-semibold ${isChecked ? 'text-amber-900' : 'text-slate-600'}`}>{doc.label}</span>
+              </label>
+            );
+          })}
+        </div>
+      </div>
+
       {/* ÁREA DE ANEXOS */}
       <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
         <div className="flex justify-between items-center mb-3">
           <div>
-            <h3 className="font-bold text-sm text-slate-800">Anexos e Fotos</h3>
-            <p className="text-xs text-slate-500">Adicione fotos do local, laudos ou documentos extras.</p>
+            <h3 className="font-bold text-sm text-slate-800">Fotos e Anexos (Opcional)</h3>
+            <p className="text-xs text-slate-500">Adicione fotos do local para o histórico.</p>
           </div>
           <button onClick={() => fileInputRef.current?.click()} className="bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 shadow-sm">
-            <Paperclip className="w-3.5 h-3.5" /> Anexar Arquivo
+            <Paperclip className="w-3.5 h-3.5" /> Anexar Imagem
           </button>
-          <input type="file" multiple ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept="image/*,.pdf" />
+          <input type="file" multiple ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept="image/*" />
         </div>
 
         {(!plan.attachments || plan.attachments.length === 0) ? (
@@ -90,11 +152,7 @@ export default function Step3Emissao({ plan, setPlan, calculations, selectedCran
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {plan.attachments.map((file, idx) => (
               <div key={idx} className="relative group bg-white border border-slate-200 rounded-lg overflow-hidden flex flex-col shadow-sm">
-                {file.type.startsWith('image/') ? (
-                  <img src={file.url} alt={file.name} className="w-full h-24 object-cover" />
-                ) : (
-                  <div className="w-full h-24 flex items-center justify-center bg-slate-100 text-slate-500 font-bold text-lg">PDF</div>
-                )}
+                <img src={file.url} alt={file.name} className="w-full h-24 object-cover" />
                 <div className="p-2 text-[10px] truncate" title={file.name}>{file.name}</div>
                 <button onClick={() => removeAttachment(idx)} className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-md opacity-0 group-hover:opacity-100 transition shadow">
                   <Trash2 className="w-3.5 h-3.5" />

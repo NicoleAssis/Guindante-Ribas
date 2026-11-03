@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { CheckCircle2, XCircle, RefreshCw } from 'lucide-react';
+import { CheckCircle2, XCircle, RefreshCw, Save } from 'lucide-react';
 import Step1Cliente from './wizard/Step1Cliente';
 import Step2Equipamento from './wizard/Step2Equipamento';
 import Step3Emissao from './wizard/Step3Emissao';
 
-export default function PlanWizard({ plan, setPlan, calculations, cranes, accessories, selectedCrane, interpolationResult, handlers, savedPlans }) {
+// A CORREÇÃO ESTÁ AQUI: Adicionado o "({ plan, setPlan," no início
+export default function PlanWizard({ plan, setPlan, calculations, cranes, accessories, clients, selectedCrane, interpolationResult, handlers, savedPlans }) {
   const [planStep, setPlanStep] = useState(1);
   const [emissionFeedback, setEmissionFeedback] = useState(null);
 
@@ -36,7 +37,7 @@ export default function PlanWizard({ plan, setPlan, calculations, cranes, access
       )}
 
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 lg:p-6 print:hidden">
-        {planStep === 1 && <Step1Cliente plan={plan} setPlan={setPlan} />}
+        {planStep === 1 && <Step1Cliente plan={plan} setPlan={setPlan} clients={clients} />}
         
         {planStep === 2 && (
           <Step2Equipamento 
@@ -64,9 +65,15 @@ export default function PlanWizard({ plan, setPlan, calculations, cranes, access
         )}
 
         <div className="mt-8 pt-4 border-t border-slate-200 flex justify-between items-center">
-          <button onClick={handlers.handleStartNewPlan} className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-2 rounded-lg flex items-center gap-1">
-            <RefreshCw className="w-3.5 h-3.5" /> Iniciar Novo
-          </button>
+          <div className="flex gap-2">
+            <button onClick={handlers.handleStartNewPlan} className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-2 rounded-lg flex items-center gap-1">
+              <RefreshCw className="w-3.5 h-3.5" /> Novo
+            </button>
+            <button onClick={() => handlers.handleSaveDraft(true)} className="text-xs bg-slate-800 hover:bg-slate-700 text-white font-semibold px-3 py-2 rounded-lg flex items-center gap-1 shadow">
+              <Save className="w-3.5 h-3.5" /> Salvar Rascunho
+            </button>
+          </div>
+          
           <div className="flex gap-2">
             {planStep > 1 && <button onClick={() => setPlanStep(planStep - 1)} className="bg-slate-200 hover:bg-slate-300 text-slate-800 text-sm font-bold px-5 py-2 rounded-lg transition">Voltar</button>}
             {planStep < 3 && (

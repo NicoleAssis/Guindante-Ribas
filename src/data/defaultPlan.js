@@ -48,5 +48,15 @@ export const DEFAULT_PLAN = {
   blockPdfOnOverload: false,
   includeTechnicalDrawings: true,
   includeEquipmentLaudo: true,
-  notes: 'ART referente ao plano de rigging para movimentação de equipamento na Bosch.'
+  notes: 'ART referente ao plano de rigging para movimentação de equipamento na Bosch.',
+  
+  // NOVO: Controle de seleção para emissão do PDF
+  selectedDocs: {
+    planilha: true,
+    memorial: true,
+    desenho: true,
+    art: true,
+    laudo: true,
+    pop: true
+  }
 };

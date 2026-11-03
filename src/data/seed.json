@@ -200,6 +200,29 @@
       "action": "Inspeção registrada na Cinta CP-4M-6T-02 (Alerta de desgaste: 28/30 ciclos)."
     }
   ],
+  "clients": [
+    {
+      "id": "cli-1",
+      "name": "Kaefer Rip Serviços Industriais Ltda.",
+      "cnpj": "07.522.191/0048-64",
+      "address": "Rod. Engenheiro Ermênio de Oliveira Penteado, 57 - Indaiatuba/SP",
+      "site": "Bosch Curitiba - Av. Juscelino Kubitschek de Oliveira, 11800 - CIC"
+    },
+    {
+      "id": "cli-2",
+      "name": "Volvo do Brasil Veículos Ltda.",
+      "cnpj": "43.999.366/0001-02",
+      "address": "Rua Paulo Fontes, 2000 - Curitiba/PR",
+      "site": "Fábrica Volvo - Curitiba/PR"
+    },
+    {
+      "id": "cli-3",
+      "name": "Renault do Brasil Ltda.",
+      "cnpj": "00.912.595/0001-56",
+      "address": "Rua Renault, 1000 - São José dos Pinhais/PR",
+      "site": "Complexo Ayrton Senna - São José dos Pinhais/PR"
+    }
+  ],
   "sequences": {
     "lastPlanSeq": 2607035,
     "lastArtSeq": 20260041
