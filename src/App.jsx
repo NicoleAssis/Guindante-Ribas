@@ -730,66 +730,41 @@ export default function App() {
               <table className="w-full border-collapse border border-black">
                 <thead>
                   <tr className="bg-slate-200">
-                    <th className="border border-black p-1 text-left w-1/3">Item Inspecionado</th>
-                    <th className="border border-black p-1 text-left">Descrição</th>
+                    <th className="border border-black p-1 text-left w-1/3">Sistema / Categoria</th>
+                    <th className="border border-black p-1 text-left">Item Inspecionado / Observação</th>
                     <th className="border border-black p-1 text-center w-16">Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td className="border border-black p-1 font-bold" rowSpan={2}>Sistema de Freios</td>
-                    <td className="border border-black p-1">Freios de serviço: eficiência e desgaste de lonas</td>
-                    <td className="border border-black p-1 text-center font-bold text-emerald-600">OK</td>
-                  </tr>
-                  <tr>
-                    <td className="border border-black p-1">Freio de estacionamento: funcionamento e efetividade</td>
-                    <td className="border border-black p-1 text-center font-bold text-emerald-600">OK</td>
-                  </tr>
-                  <tr>
-                    <td className="border border-black p-1 font-bold" rowSpan={3}>Segurança e Rodagem</td>
-                    <td className="border border-black p-1">Sistema de alerta sonoro e luzes (buzina, setas, faróis, ré, freio)</td>
-                    <td className="border border-black p-1 text-center font-bold text-emerald-600">OK</td>
-                  </tr>
-                  <tr>
-                    <td className="border border-black p-1">Espelhos retrovisores interno e externo</td>
-                    <td className="border border-black p-1 text-center font-bold text-emerald-600">OK</td>
-                  </tr>
-                  <tr>
-                    <td className="border border-black p-1">Limpadores, estepe, macaco, extintor e chave de roda</td>
-                    <td className="border border-black p-1 text-center font-bold text-emerald-600">OK</td>
-                  </tr>
-                  <tr>
-                    <td className="border border-black p-1 font-bold" rowSpan={2}>Sistema de Transmissão</td>
-                    <td className="border border-black p-1">Motor: níveis de óleo, ruídos anormais e funcionamento</td>
-                    <td className="border border-black p-1 text-center font-bold text-emerald-600">OK</td>
-                  </tr>
-                  <tr>
-                    <td className="border border-black p-1">Transmissão: funcionamento diferencial e trocas de marchas</td>
-                    <td className="border border-black p-1 text-center font-bold text-emerald-600">OK</td>
-                  </tr>
-                  <tr>
-                    <td className="border border-black p-1 font-bold" rowSpan={2}>Sistema de Direção</td>
-                    <td className="border border-black p-1">Hidráulica: vazamentos e funcionamento adequado</td>
-                    <td className="border border-black p-1 text-center font-bold text-emerald-600">OK</td>
-                  </tr>
-                  <tr>
-                    <td className="border border-black p-1">Eixo de direção, pneus e alinhamento</td>
-                    <td className="border border-black p-1 text-center font-bold text-emerald-600">OK</td>
-                  </tr>
-                  <tr>
-                    <td className="border border-black p-1 font-bold" rowSpan={2}>Sistema de Içamento</td>
-                    <td className="border border-black p-1">Lança, JIB, Sapatas e alavancas de comando</td>
-                    <td className="border border-black p-1 text-center font-bold text-emerald-600">OK</td>
-                  </tr>
-                  <tr>
-                    <td className="border border-black p-1">Nível de óleo hidráulico e sinalizadores de segurança</td>
-                    <td className="border border-black p-1 text-center font-bold text-emerald-600">OK</td>
-                  </tr>
+                  {(plan.inspectionItems || [
+                    { category: 'Sistema de Freios', label: 'Freios de serviço e freio de estacionamento', status: 'OK', obs: '' },
+                    { category: 'Segurança e Rodagem', label: 'Alerta sonoro, luzes, retrovisores, limpadores e extintor', status: 'OK', obs: '' },
+                    { category: 'Sistema de Transmissão', label: 'Motor, nível de óleo, ruídos anormais e câmbio', status: 'OK', obs: '' },
+                    { category: 'Sistema de Direção', label: 'Direção hidráulica, eixos, pneus e alinhamento', status: 'OK', obs: '' },
+                    { category: 'Sistema de Içamento', label: 'Lança, JIB, Sapatas, alavancas e óleo hidráulico', status: 'OK', obs: '' },
+                  ]).map((item, idx) => (
+                    <tr key={idx} className={item.status === 'NOK' ? 'bg-red-50' : ''}>
+                      <td className="border border-black p-1.5 font-bold">{item.category}</td>
+                      <td className="border border-black p-1.5">
+                        <div>{item.label}</div>
+                        {item.status === 'NOK' && item.obs && (
+                          <div className="text-red-700 font-semibold mt-0.5 text-[9px]">⚠️ Obs: {item.obs}</div>
+                        )}
+                      </td>
+                      <td className={`border border-black p-1.5 text-center font-bold ${item.status === 'NOK' ? 'text-red-600 bg-red-100' : 'text-emerald-600 bg-emerald-50'}`}>
+                        {item.status || 'OK'}
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
 
               <div className="mt-8 border-t border-black pt-4 text-center">
-                <p className="mb-8">Com base na vistoria, informo que o guindaste está <strong>LIBERADO</strong> para trabalho.</p>
+                {(plan.inspectionItems || []).some(it => it.status === 'NOK') ? (
+                  <p className="mb-8 text-red-600 font-bold bg-red-50 p-2 border border-red-300 rounded">⚠️ ATENÇÃO: GUINDASTE COM BLOQUEIO TÉCNICO. NÃO LIBERADO PARA TRABALHO DEVIDO ÀS NÃO CONFORMIDADES REGISTRADAS ACIMA.</p>
+                ) : (
+                  <p className="mb-8">Com base na vistoria, informo que o guindaste está <strong>LIBERADO</strong> para trabalho.</p>
+                )}
                 <p className="font-bold">_______________________________________________________</p>
                 <p className="font-bold">GIULIANO CESAR BREDA DE SOUZA</p>
                 <p>Engenheiro Mecânico - CREA 78755/D - PR</p>

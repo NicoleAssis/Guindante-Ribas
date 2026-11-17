@@ -1,5 +1,8 @@
 import React, { useRef } from 'react';
-import { Printer, AlertTriangle, Paperclip, CheckCircle2, Clock, History, Trash2, FileText, Image as ImageIcon, Shield } from 'lucide-react';
+import { 
+  Printer, AlertTriangle, Paperclip, CheckCircle2, Clock, History, 
+  Trash2, FileText, Image as ImageIcon, Shield, XCircle, Check, X, ClipboardCheck 
+} from 'lucide-react';
 
 export default function Step3Emissao({ plan, setPlan, calculations, selectedCrane, handleEmitPdf, savedPlans }) {
   const fileInputRef = useRef(null);
@@ -30,7 +33,10 @@ export default function Step3Emissao({ plan, setPlan, calculations, selectedCran
     for (const file of files) {
       if (file.type.startsWith('image/')) {
         const compressedUrl = await compressImage(file);
-        setPlan((prev) => ({ ...prev, attachments: [...(prev.attachments || []), { name: file.name, type: 'image/jpeg', url: compressedUrl }] }));
+        setPlan((prev) => ({ 
+          ...prev, 
+          attachments: [...(prev.attachments || []), { name: file.name, type: 'image/jpeg', url: compressedUrl }] 
+        }));
       } else {
         alert('Por favor, envie apenas imagens (fotos).');
       }
@@ -46,7 +52,6 @@ export default function Step3Emissao({ plan, setPlan, calculations, selectedCran
     ? savedPlans.filter((p) => p.clientName === plan.clientName && p.assignedPlanNumber !== plan.assignedPlanNumber) 
     : [];
 
-  // Função para marcar/desmarcar documentos
   const toggleDoc = (docKey) => {
     setPlan((prev) => ({
       ...prev,
@@ -67,6 +72,39 @@ export default function Step3Emissao({ plan, setPlan, calculations, selectedCran
     { key: 'pop', label: '6. Procedimento Operacional (POP)', icon: FileText },
   ];
 
+  // CHECKLIST DE INSPEÇÃO TÉCNICA (OK / NOK)
+  const defaultInspectionItems = [
+    { key: 'freios', category: 'Sistema de Freios', label: 'Freios de serviço e freio de estacionamento', status: 'OK', obs: '' },
+    { key: 'rodagem', category: 'Segurança e Rodagem', label: 'Alerta sonoro, luzes, retrovisores, limpadores e extintor', status: 'OK', obs: '' },
+    { key: 'transmissao', category: 'Sistema de Transmissão', label: 'Motor, nível de óleo, ruídos anormais e câmbio', status: 'OK', obs: '' },
+    { key: 'direcao', category: 'Sistema de Direção', label: 'Direção hidráulica, eixos, pneus e alinhamento', status: 'OK', obs: '' },
+    { key: 'icamento', category: 'Sistema de Içamento', label: 'Lança, JIB, Sapatas, alavancas e óleo hidráulico', status: 'OK', obs: '' },
+  ];
+
+  const inspectionItems = plan.inspectionItems || defaultInspectionItems;
+
+  const handleInspectionStatus = (key, status) => {
+    const updated = inspectionItems.map((item) => {
+      if (item.key === key) {
+        return { ...item, status, obs: status === 'OK' ? '' : item.obs };
+      }
+      return item;
+    });
+    setPlan((prev) => ({ ...prev, inspectionItems: updated }));
+  };
+
+  const handleInspectionObs = (key, obs) => {
+    const updated = inspectionItems.map((item) => {
+      if (item.key === key) {
+        return { ...item, obs };
+      }
+      return item;
+    });
+    setPlan((prev) => ({ ...prev, inspectionItems: updated }));
+  };
+
+  const hasNOK = inspectionItems.some((item) => item.status === 'NOK');
+
   return (
     <div className="space-y-5 animate-fade-in">
       <div className="border-b border-slate-100 pb-3 flex justify-between items-center">
@@ -74,7 +112,7 @@ export default function Step3Emissao({ plan, setPlan, calculations, selectedCran
           <h2 className="font-bold text-lg text-slate-900 flex items-center gap-2">
             <Printer className="w-5 h-5 text-amber-600" /> Revisão e Emissão
           </h2>
-          <p className="text-xs text-slate-500">Selecione os documentos, anexe fotos e emita o PDF Oficial.</p>
+          <p className="text-xs text-slate-500">Selecione os documentos, inspecione o guindaste, anexe fotos e emita o PDF Oficial.</p>
         </div>
         <button onClick={handleEmitPdf} className="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold px-4 py-2 rounded-lg flex items-center gap-2 shadow-lg">
           <Printer className="w-4 h-4" /> Emitir PDF Oficial
@@ -86,12 +124,14 @@ export default function Step3Emissao({ plan, setPlan, calculations, selectedCran
           <AlertTriangle className="w-5 h-5 shrink-0" />
           <div>
             <strong className="block mb-1">Atenção: Taxa de utilização acima de 85%!</strong>
-            <ul className="list-disc list-inside">{calculations.overloadedItems.map((it, i) => <li key={i}>{it}</li>)}</ul>
+            <ul className="list-disc list-inside">
+              {calculations.overloadedItems.map((it, i) => <li key={i}>{it}</li>)}
+            </ul>
           </div>
         </div>
       )}
 
-      {/* PAINEL DE STATUS */}
+      {/* PAINEL DE STATUS DO PLANO */}
       <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
         <h3 className="font-bold text-sm text-slate-800 mb-3">Status do Plano</h3>
         <div className="flex flex-wrap gap-2">
@@ -104,6 +144,81 @@ export default function Step3Emissao({ plan, setPlan, calculations, selectedCran
           <button onClick={() => setPlan({ ...plan, status: 'APROVADO' })} className={`px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-2 border transition ${plan.status === 'APROVADO' ? 'bg-emerald-100 border-emerald-400 text-emerald-900' : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-100'}`}>
             <CheckCircle2 className="w-4 h-4" /> Aprovado
           </button>
+        </div>
+      </div>
+
+      {/* PAINEL INTERATIVO DE INSPEÇÃO TÉCNICA (OK / NOK) */}
+      <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-3">
+        <div className="flex justify-between items-center border-b border-slate-200 pb-2">
+          <div>
+            <h3 className="font-bold text-sm text-slate-800 flex items-center gap-2">
+              <ClipboardCheck className="w-4 h-4 text-amber-600" /> Laudo de Inspeção Técnica do Guindaste
+            </h3>
+            <p className="text-xs text-slate-500">Marque o estado operacional de cada sistema (OK = Conforme | NOK = Não Conforme).</p>
+          </div>
+          <span className={`px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 ${hasNOK ? 'bg-red-100 text-red-800 border border-red-300' : 'bg-emerald-100 text-emerald-800 border border-emerald-300'}`}>
+            {hasNOK ? <XCircle className="w-3.5 h-3.5" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+            {hasNOK ? 'EQUIPAMENTO COM BLOQUEIO (NOK)' : 'GUINDASTE LIBERADO'}
+          </span>
+        </div>
+
+        {hasNOK && (
+          <div className="bg-red-50 border border-red-300 text-red-900 p-3 rounded-lg text-xs flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
+            <span>Existem itens com não conformidade <strong>(NOK)</strong>. Descreva o motivo da pendência abaixo para o laudo técnico.</span>
+          </div>
+        )}
+
+        <div className="space-y-2.5">
+          {inspectionItems.map((item) => (
+            <div key={item.key} className={`p-3 rounded-lg border bg-white transition ${item.status === 'NOK' ? 'border-red-300 bg-red-50/50' : 'border-slate-200'}`}>
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-amber-700">{item.category}</span>
+                  <h4 className="text-xs font-semibold text-slate-800">{item.label}</h4>
+                </div>
+                
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => handleInspectionStatus(item.key, 'OK')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 border transition ${
+                      item.status === 'OK'
+                        ? 'bg-emerald-600 text-white border-emerald-700 shadow-sm'
+                        : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'
+                    }`}
+                  >
+                    <Check className="w-3.5 h-3.5" /> OK
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleInspectionStatus(item.key, 'NOK')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 border transition ${
+                      item.status === 'NOK'
+                        ? 'bg-red-600 text-white border-red-700 shadow-sm'
+                        : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'
+                    }`}
+                  >
+                    <X className="w-3.5 h-3.5" /> NOK
+                  </button>
+                </div>
+              </div>
+
+              {item.status === 'NOK' && (
+                <div className="mt-2.5 pt-2 border-t border-red-200">
+                  <label className="text-[11px] font-semibold text-red-800 block mb-1">Motivo da Não Conformidade / Observação:</label>
+                  <input
+                    type="text"
+                    value={item.obs || ''}
+                    onChange={(e) => handleInspectionObs(item.key, e.target.value)}
+                    placeholder="Ex: Vazamento identificado na mangueira hidráulica do braço 2..."
+                    className="w-full text-xs border border-red-300 rounded px-2.5 py-1.5 bg-white text-red-900 focus:outline-none focus:ring-1 focus:ring-red-500"
+                  />
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
 
